@@ -8,7 +8,7 @@ exports.connect = function(callback) {
             console.log('Connection Error ', err);
             callback(false);
         } else {
-            market = db.collection('market');
+
             callback(db);
             // db.close();
         }
