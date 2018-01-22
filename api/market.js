@@ -4,35 +4,30 @@ var client = new Client();
 var pool = require('../config/db.js');
 
 
-pool.connect(function(db) {
-    if (db) {
-        // var market = db.collection('market');
-        // market.find({}, function(err, data) {
-        //     if (!err) {
-        //         console.log('data', data);
-        //     } else {
-        //         console.log('Error', err);
-        //     }
-        // })
-        console.log('connected');
-    } else {
-        console.log('Error');
-    }
-})
+
+
 
 exports.getMarket = function(req, res) {
     // body...
     console.log('get market is called')
 }
+pool.connect(function(db) {
+    if (db) {
+        console.log('connected');
+        cron.schedule('0 */1 * * * *', function() {
+            // test();
+            getMarketData();
+        });
 
-cron.schedule('0 */1 * * * *', function() {
-    test();
-    // getMarketData();
-});
+    } else {
+        console.log('Error');
+    }
+})
 
-function test() {
-    console.log('Cron runnig');
-}
+
+// function test() {
+//     console.log('Cron runnig');
+// }
 
 function getMarketData() {
     console.log('saving market data into database')
@@ -59,6 +54,13 @@ function getMarketData() {
                     "SellBaseVolume": data.Data[i].SellBaseVolume,
                     "date": date
                 }
+                market.insert(data, function(err, data) {
+                    if (!err) {
+                        console.log('data', data);
+                    } else {
+                        console.log('Error', err);
+                    }
+                })
             }
         } else {
             console.log('there is no any data found')

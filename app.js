@@ -5,9 +5,8 @@ var expressValidator = require('express-validator');
 var busboy = require('connect-busboy');
 var app = express();
 var multer = require('multer')
-var market = require(__dirname + "/api/market.js");
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.urlencoded({
     limit: '500mb',
     extended: true,
@@ -25,6 +24,8 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+var pool = require(__dirname + '/config/db.js');
+var market = require(__dirname + "/api/market.js");
 
 
 
