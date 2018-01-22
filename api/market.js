@@ -24,8 +24,9 @@ exports.getMarket = function(req, res) {
     // body...
     console.log('get market is called')
 }
+
 cron.schedule('0 */1 * * * *', function() {
-    // test();
+    test();
     // getMarketData();
 });
 
@@ -38,7 +39,26 @@ function getMarketData() {
     client.get("https://www.cryptopia.co.nz/api/GetMarkets", function(data, response) {
         if (data.Success == true) {
             for (var i = 0; i < data.Data.length; i++) {
-                console.log(data.Data[i]);
+                var date = new Date().getTime();
+                var data = {
+                    "TradePairId": data.Data[i].TradePairId,
+                    "Label": data.Data[i].Label,
+                    "AskPrice": data.Data[i].AskPrice,
+                    "BidPrice": data.Data[i].BidPrice,
+                    "Low": data.Data[i].Low,
+                    "High": data.Data[i].High,
+                    "Volume": data.Data[i].Volume,
+                    "LastPrice": data.Data[i].LastPrice,
+                    "BuyVolume": data.Data[i].BuyVolume,
+                    "SellVolume": data.Data[i].SellVolume,
+                    "Change": data.Data[i].Change,
+                    "Open": data.Data[i].Open,
+                    "Close": data.Data[i].Close,
+                    "BaseVolume": data.Data[i].BaseVolume,
+                    "BuyBaseVolume": data.Data[i].BuyBaseVolume,
+                    "SellBaseVolume": data.Data[i].SellBaseVolume,
+                    "date": date
+                }
             }
         } else {
             console.log('there is no any data found')
