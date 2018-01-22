@@ -18,7 +18,6 @@ exports.connect = function(callback) {
 
 // var mongodb = require('mongodb');
 // var MongoClient = mongodb.MongoClient;
-// // var mongoUrl = 'mongodb://heroku_bvm7pktg:curq73l0i58mhtvaq9a961sgc2@ds157584.mlab.com:57584/heroku_bvm7pktg';
 // //console.log('mongoUrl', mongoUrl);
 // exports.connect = function(callback) {
 //     MongoClient.connect(mongoUrl, function(err, db) {
