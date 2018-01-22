@@ -56,7 +56,7 @@ function getMarketData() {
                 }
                 market.insert(data, function(err, data) {
                     if (!err) {
-                        console.log('data', data);
+                        console.log('inserted');
                     } else {
                         console.log('Error', err);
                     }
