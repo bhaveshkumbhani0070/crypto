@@ -6,6 +6,13 @@ var pool = require('../config/db.js');
 
 pool.connect(function(db) {
     if (db) {
+        market.find({}, function(err, data) {
+            if (!err) {
+                console.log('data', data);
+            } else {
+                console.log('Error', err);
+            }
+        })
         console.log('connected');
     } else {
         console.log('Error');
