@@ -35,7 +35,7 @@ function getMarketData() {
         if (data.Success == true) {
             for (var i = 0; i < data.Data.length; i++) {
                 var date = new Date().getTime();
-                var data = {
+                var d = {
                     "TradePairId": data.Data[i].TradePairId,
                     "Label": data.Data[i].Label,
                     "AskPrice": data.Data[i].AskPrice,
@@ -54,7 +54,7 @@ function getMarketData() {
                     "SellBaseVolume": data.Data[i].SellBaseVolume,
                     "date": date
                 }
-                market.insert(data, function(err, data) {
+                market.insert(d, function(err, data) {
                     if (!err) {
                         console.log('inserted');
                     } else {
