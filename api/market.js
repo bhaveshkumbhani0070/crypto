@@ -11,12 +11,47 @@ exports.getMarket = function(req, res) {
     // body...
     console.log('get market is called')
 }
+
+// var min = 1;
+// pool.connect(function(db) {
+//     if (db) {
+//         console.log('connected');
+
+//         // market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $gt: 1516696503701 + 1000 * 60 * 1 } }] }).toArray(function(err, data) {
+//         market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
+//             if (!err) {
+//                 console.log('data', data.length);
+//                 var lastTime = 1516696691490 + 1000 * 60 * 1;
+//                 console.log('lastTime', lastTime);
+//                 for (var i = 0; i > data.length; i++) {
+//                     if (data[i].date > lastTime) {
+//                         console.log('last', data[i].date);
+//                     } else {
+//                         console.log('date', data[i].date);
+//                     }
+//                     // var start = data[i].date;
+//                     // var end = data[i + 1] ? data[i + 1].date : "";
+//                     // getDiff(start, end);
+//                 }
+//             } else {
+//                 console.log('Error', err);
+//             }
+//         })
+//     } else {
+//         console.log('Error');
+//     }
+// })
+
+function getDiffVolum() {
+
+}
+
+
 pool.connect(function(db) {
     if (db) {
         console.log('connected');
         cron.schedule('0 */1 * * * *', function() {
-            // test();
-            getMarketData();
+            addMarketData();
         });
 
     } else {
@@ -25,11 +60,7 @@ pool.connect(function(db) {
 })
 
 
-// function test() {
-//     console.log('Cron runnig');
-// }
-
-function getMarketData() {
+function addMarketData() {
     console.log('saving market data into database')
     client.get("https://www.cryptopia.co.nz/api/GetMarkets", function(data, response) {
         if (data.Success == true) {
@@ -66,4 +97,15 @@ function getMarketData() {
             console.log('there is no any data found')
         }
     });
+}
+
+function getDiff(date1, date2) {
+    var today = new Date(date1);
+    var Christmas = new Date(date2);
+    var diffMs = (Christmas - today); // milliseconds between now & Christmas
+    var diffDays = Math.floor(diffMs / 86400000); // days
+    var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    console.log('diffMins', diffMins);
+    return diffMins;
 }
