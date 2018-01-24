@@ -29,9 +29,9 @@ var market = require(__dirname + "/api/market.js");
 
 
 
-// app.get('/', function(req, res) {
-//     res.sendFile('index.html', { 'root': "view" });
-// });
+app.get('/', function(req, res) {
+    res.sendFile('index.html', { 'root': "view" });
+});
 app.use(expressValidator());
 app.use(bodyParser.json());
 app.use(busboy());

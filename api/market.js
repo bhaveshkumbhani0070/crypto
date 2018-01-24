@@ -17,18 +17,13 @@ exports.getMarket = function(req, res) {
 //     if (db) {
 //         console.log('connected');
 
-//         // market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $gt: 1516696503701 + 1000 * 60 * 1 } }] }).toArray(function(err, data) {
-//         market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
+//         market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $lt: 1516696691490 + 1000 * 60 * 1, $gte: 1516696691490 } }] }).toArray(function(err, data) {
+//             // market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
 //             if (!err) {
-//                 console.log('data', data.length);
-//                 var lastTime = 1516696691490 + 1000 * 60 * 1;
-//                 console.log('lastTime', lastTime);
-//                 for (var i = 0; i > data.length; i++) {
-//                     if (data[i].date > lastTime) {
-//                         console.log('last', data[i].date);
-//                     } else {
-//                         console.log('date', data[i].date);
-//                     }
+//                 // var lastTime = 1516696691490 + 1000 * 60 * 1;
+//                 // console.log('lastTime', lastTime);
+//                 for (var i = 0; i < data.length; i++) {
+//                     console.log('data', data[i]);
 //                     // var start = data[i].date;
 //                     // var end = data[i + 1] ? data[i + 1].date : "";
 //                     // getDiff(start, end);
