@@ -57,7 +57,7 @@ pool.connect(function(db) {
     if (db) {
         console.log('connected');
         cron.schedule('0 */1 * * * *', function() {
-            // addMarketData();
+            addMarketData();
         });
 
     } else {
