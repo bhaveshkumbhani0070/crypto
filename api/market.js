@@ -14,14 +14,15 @@ exports.getMarket = function(req, res) {
     pool.connect(function(db) {
         if (db) {
             console.log('connected');
-            market.find({ Label: "ETH/BTC" }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
+            //"ETH/BTC"
+            market.find({ Label: label }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
                 if (!err) {
                     var maxDate = data[0].date;
                     console.log('maxDate', maxDate)
-                    maxDate = maxDate - 1000 * 10 * 60 * min;
+                    maxDate = maxDate - 1000 * 10 * 60 * time;
                     console.log('maxDate', maxDate);
 
-                    market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
+                    market.find({ $and: [{ Label: label }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
                         if (!err) {
                             console.log('data', data.length);
                             console.log('data', data);

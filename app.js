@@ -57,7 +57,7 @@ app.use(busboy());
 // });
 // app.use('/api', apiRoutes);
 
-app.post('/api/getMarket', market.getMarket);
+app.get('/api/getMarket', market.getMarket);
 // create server port //
 app.listen(app.get('port'));
 console.log("Started on Port No. ", app.get('port'));
