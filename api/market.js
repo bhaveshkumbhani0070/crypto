@@ -15,17 +15,22 @@ exports.getMarket = function(req, res) {
         if (db) {
             console.log('connected');
             //"ETH/BTC"
-            market.find({$and: [{Label: label},{Change:{$gt:10}}] }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
+            market.find({Label: label}).sort({ date: -1 }).limit(1).toArray(function(err, data) {
                 if (!err) {
                     console.log('Market Data',data);
-                    if(data.length>0){
                         var maxDate = data[0].date;
                         maxDate = maxDate - 1000 * 10 * 60 * time;
-                        market.find({ $and: [{ Label: label }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
+                        market.find({ $and: [{ Label: label }, { date: { $gt: maxDate }},{Change:{$gt:10}}] }).sort({ date: -1 }).toArray(function(err, data) {
                             if (!err) {
                                 console.log('data', data.length);
+                                if(data.length>0){
+                                    var message="market data get successfully";
+                                }
+                                else{
+                                    var message="There is no market data with more than 10% change";
+                                }
                                 console.log('data', data);
-                                res.json({ code: 200, status: 'success', message: 'market get successfully', Data: data });
+                                res.json({ code: 200, status: 'success', message: message, Data: data });
                                 return;
                             } else {
                                 console.log('Error', err);
@@ -33,11 +38,6 @@ exports.getMarket = function(req, res) {
                                 return;
                             }
                         });
-                    }
-                    else{
-                        res.json({code:200,status:'succcess',message:'There is no record found more than 10% change'});
-                        return;
-                    }
                 } else {
                     console.log('Error', err);
                     res.json({ code: 200, status: 'error', message: 'error for get market' });
