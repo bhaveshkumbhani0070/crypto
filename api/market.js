@@ -9,33 +9,44 @@ var pool = require('../config/db.js');
 
 exports.getMarket = function(req, res) {
     // body...
-    console.log('get market is called')
+    var label = req.query.label;
+    var time = req.query.time;
+    pool.connect(function(db) {
+        if (db) {
+            console.log('connected');
+            market.find({ Label: "ETH/BTC" }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
+                if (!err) {
+                    var maxDate = data[0].date;
+                    console.log('maxDate', maxDate)
+                    maxDate = maxDate - 1000 * 10 * 60 * min;
+                    console.log('maxDate', maxDate);
+
+                    market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
+                        if (!err) {
+                            console.log('data', data.length);
+                            console.log('data', data);
+                            res.json({ code: 200, status: 'success', message: 'market get successfully', Data: data });
+                            return;
+                        } else {
+                            console.log('Error', err);
+                            res.json({ code: 200, status: 'error', message: 'error for get market' });
+                            return;
+                        }
+                    });
+                } else {
+                    console.log('Error', err);
+                    res.json({ code: 200, status: 'error', message: 'error for get market' });
+                    return;
+                }
+            })
+        } else {
+            console.log('Error');
+            res.json({ code: 200, status: 'error', message: 'error for get market' });
+            return;
+        }
+    })
 }
 
-// var min = 1;
-// pool.connect(function(db) {
-//     if (db) {
-//         console.log('connected');
-
-//         // market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $lt: 1516696691490 + 1000 * 60 * 1, $gte: 1516696691490 } }] }).toArray(function(err, data) {
-//         market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
-//             if (!err) {
-//                 // var lastTime = 1516696691490 + 1000 * 60 * 1;
-//                 // console.log('lastTime', lastTime);
-//                 for (var i = 0; i < data.length; i++) {
-//                     console.log('data', data[i]);
-//                     // var start = data[i].date;
-//                     // var end = data[i + 1] ? data[i + 1].date : "";
-//                     // getDiff(start, end);
-//                 }
-//             } else {
-//                 console.log('Error', err);
-//             }
-//         })
-//     } else {
-//         console.log('Error');
-//     }
-// })
 
 function getDiffVolum() {
 
@@ -46,7 +57,7 @@ pool.connect(function(db) {
     if (db) {
         console.log('connected');
         cron.schedule('0 */1 * * * *', function() {
-            addMarketData();
+            // addMarketData();
         });
 
     } else {
