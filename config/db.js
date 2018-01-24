@@ -1,6 +1,6 @@
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
-var mongoUrl = "mongodb://127.0.0.1:27017/admin";
+var mongoUrl = "mongodb://128.199.64.173/admin";
 
 exports.connect = function(callback) {
     MongoClient.connect(mongoUrl,

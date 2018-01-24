@@ -17,8 +17,8 @@ exports.getMarket = function(req, res) {
 //     if (db) {
 //         console.log('connected');
 
-//         market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $lt: 1516696691490 + 1000 * 60 * 1, $gte: 1516696691490 } }] }).toArray(function(err, data) {
-//             // market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
+//         // market.find({ $and: [{ Label: "ETH/BTC" }, { date: { $lt: 1516696691490 + 1000 * 60 * 1, $gte: 1516696691490 } }] }).toArray(function(err, data) {
+//         market.find({ Label: "ETH/BTC" }).toArray(function(err, data) {
 //             if (!err) {
 //                 // var lastTime = 1516696691490 + 1000 * 60 * 1;
 //                 // console.log('lastTime', lastTime);
