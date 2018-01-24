@@ -15,25 +15,29 @@ exports.getMarket = function(req, res) {
         if (db) {
             console.log('connected');
             //"ETH/BTC"
-            market.find({ Label: label }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
+            market.find({$and: [{Label: label},{Change:{$gt:10}}] }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
                 if (!err) {
-                    var maxDate = data[0].date;
-                    console.log('maxDate', maxDate)
-                    maxDate = maxDate - 1000 * 10 * 60 * time;
-                    console.log('maxDate', maxDate);
-
-                    market.find({ $and: [{ Label: label }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
-                        if (!err) {
-                            console.log('data', data.length);
-                            console.log('data', data);
-                            res.json({ code: 200, status: 'success', message: 'market get successfully', Data: data });
-                            return;
-                        } else {
-                            console.log('Error', err);
-                            res.json({ code: 200, status: 'error', message: 'error for get market' });
-                            return;
-                        }
-                    });
+                    console.log('Market Data',data);
+                    if(data.length>0){
+                        var maxDate = data[0].date;
+                        maxDate = maxDate - 1000 * 10 * 60 * time;
+                        market.find({ $and: [{ Label: label }, { date: { $gt: maxDate } }] }).sort({ date: -1 }).toArray(function(err, data) {
+                            if (!err) {
+                                console.log('data', data.length);
+                                console.log('data', data);
+                                res.json({ code: 200, status: 'success', message: 'market get successfully', Data: data });
+                                return;
+                            } else {
+                                console.log('Error', err);
+                                res.json({ code: 200, status: 'error', message: 'error for get market' });
+                                return;
+                            }
+                        });
+                    }
+                    else{
+                        res.json({code:200,status:'succcess',message:'There is no record found more than 10% change'});
+                        return;
+                    }
                 } else {
                     console.log('Error', err);
                     res.json({ code: 200, status: 'error', message: 'error for get market' });
@@ -49,16 +53,18 @@ exports.getMarket = function(req, res) {
 }
 
 
-function getDiffVolum() {
-
+function getPercentageChange(oldNumber, newNumber) {
+    var decreaseValue = oldNumber - newNumber;
+    return (decreaseValue / oldNumber) * 100;
 }
 
 
 pool.connect(function(db) {
     if (db) {
+        
         console.log('connected');
         cron.schedule('0 */1 * * * *', function() {
-            addMarketData();
+            // addMarketData();
         });
 
     } else {
