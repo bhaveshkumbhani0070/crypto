@@ -16,8 +16,9 @@ exports.getMarket = function(req, res,next) {
             cron.schedule('0 */1 * * * *', function() {
                 market.find().sort({ date: -1 }).limit(1).toArray(function(err, data) {
                     if (!err) {
-                        console.log('Market Data',data);
+                        // console.log('Market Data',data);
                             var maxDate = data[0].date;
+                            var oldVolumn=data[0].Volume;
                             maxDate = maxDate - 1000 * 10 * 60 * 1;
                             market.find({ $and: [{ date: { $gt: maxDate }},{Change:{$gt:10}}] }).sort({ date: -1 }).toArray(function(err, data) {
                                 if (!err) {
@@ -28,7 +29,18 @@ exports.getMarket = function(req, res,next) {
                                     else{
                                         var message="There is no market data with more than 10% change";
                                     }
-                                    console.log(data);
+                                    for (var i=0;i<data.length;i++){
+                                        var newData={
+                                          Label: data[i].Label,
+                                          OldVolume: data[i].BaseVolume,
+                                          newVolume:data[i].Volume,     
+                                          oldPrice: data[i].LastPrice,
+                                          newPrice:data[i].AskPrice,     
+                                          Change: data[i].Change,
+                                        }
+                                        console.log(newData);
+                                    
+                                    }
                                     // res.json({ code: 200, status: 'success', message: message, Data: data });
                                 } else {
                                     console.log('Error', err);
