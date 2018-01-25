@@ -7,7 +7,7 @@ var pool = require('../config/db.js');
 
 
 
-exports.getMarket = function(req, res) {
+exports.getMarket = function(req, res,next) {
     // body...
     pool.connect(function(db) {
         if (db) {
@@ -28,19 +28,18 @@ exports.getMarket = function(req, res) {
                                     else{
                                         var message="There is no market data with more than 10% change";
                                     }
-                                    console.log('data', data);
-                                    res.json({ code: 200, status: 'success', message: message, Data: data });
-                                    return;
+                                    console.log(data);
+                                    // res.json({ code: 200, status: 'success', message: message, Data: data });
                                 } else {
                                     console.log('Error', err);
-                                    res.json({ code: 200, status: 'error', message: 'error for get market' });
-                                    return;
+                                    // res.json({ code: 200, status: 'error', message: 'error for get market' });
+                                    // return;
                                 }
                             });
                     } else {
                         console.log('Error', err);
-                        res.json({ code: 200, status: 'error', message: 'error for get market' });
-                        return;
+                        // res.json({ code: 200, status: 'error', message: 'error for get market' });
+                        // return;
                     }
                 })
             });
@@ -100,7 +99,7 @@ function addMarketData() {
                 }
                 market.insert(d, function(err, data) {
                     if (!err) {
-                        console.log('inserted');
+                        // console.log('inserted');
                     } else {
                         console.log('Error', err);
                     }
