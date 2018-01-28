@@ -3,59 +3,80 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 var pool = require('../config/db.js');
 
+exports.getMarket = function(req, res, next) {
+    getMarketData()
+}
 
 
+// Algorithm for buy and sell from market data
+
+function algotithm() {
+    pool.connect(function(db) {
+        if (db) {
+            console.log('server connected');
+            market.find({ $and: [{ "Label": { $regex: ".*/BTC.*" } }, { Change: { $gt: 10 } }] }).limit(10).toArray(function(err, data) {
+                if (!err) {
+                    for (var i = 0; i < data.length; i++) {
+                        console.log('data', data[i]);
+                    }
+                } else {
+                    console.log('Error', err);
+                }
+            })
+        } else {
+            console.log('Connection error');
+        }
+    })
+}
 
 
-exports.getMarket = function(req, res,next) {
-    // body...
+function getMarketData() {
     pool.connect(function(db) {
         if (db) {
             console.log('connected');
             //"ETH/BTC"
-            cron.schedule('0 */1 * * * *', function() {
-                market.find().sort({ date: -1 }).limit(1).toArray(function(err, data) {
+            // cron.schedule('0 */1 * * * *', function() {
+
+            market.find({ "Label": { $regex: ".*/BTC.*" } }).sort({ date: -1 }).limit(1).toArray(function(err, data) {
                     if (!err) {
                         // console.log('Market Data',data);
-                            var maxDate = data[0].date;
-                            var oldVolumn=data[0].Volume;
-                            maxDate = maxDate - 1000 * 10 * 60 * 1;
-                            market.find({ $and: [{ date: { $gt: maxDate }},{Change:{$gt:10}}] }).sort({ date: -1 }).toArray(function(err, data) {
-                                if (!err) {
-                                    console.log('data', data.length);
-                                    if(data.length>0){
-                                        var message="market data get successfully";
-                                    }
-                                    else{
-                                        var message="There is no market data with more than 10% change";
-                                    }
-                                    for (var i=0;i<data.length;i++){
-                                        var newData={
-                                          Label: data[i].Label,
-                                          OldVolume: data[i].BaseVolume,
-                                          newVolume:data[i].Volume,     
-                                          oldPrice: data[i].LastPrice,
-                                          newPrice:data[i].AskPrice,     
-                                          Change: data[i].Change,
-                                        }
-                                        console.log(newData);
-                                    
-                                    }
-                                    // res.json({ code: 200, status: 'success', message: message, Data: data });
+                        var maxDate = data[0].date;
+                        var oldVolumn = data[0].Volume;
+                        maxDate = maxDate - 1000 * 10 * 60 * 1;
+                        market.find({ $and: [{ "Label": { $regex: ".*/BTC.*" } }, { date: { $gt: maxDate } }, { Change: { $gt: 10 } }] }).sort({ date: -1 }).toArray(function(err, data) {
+                            if (!err) {
+                                console.log('data', data.length);
+                                if (data.length > 0) {
+                                    var message = "market data get successfully";
                                 } else {
-                                    console.log('Error', err);
-                                    // res.json({ code: 200, status: 'error', message: 'error for get market' });
-                                    // return;
+                                    var message = "There is no market data with more than 10% change";
                                 }
-                            });
+                                for (var i = 0; i < data.length; i++) {
+                                    var newData = {
+                                        Label: data[i].Label,
+                                        OldVolume: data[i].BaseVolume,
+                                        newVolume: data[i].Volume,
+                                        oldPrice: data[i].LastPrice,
+                                        newPrice: data[i].AskPrice,
+                                        Change: data[i].Change,
+                                    }
+                                    console.log(newData);
+
+                                }
+                                // res.json({ code: 200, status: 'success', message: message, Data: data });
+                            } else {
+                                console.log('Error', err);
+                                // res.json({ code: 200, status: 'error', message: 'error for get market' });
+                                // return;
+                            }
+                        });
                     } else {
                         console.log('Error', err);
                         // res.json({ code: 200, status: 'error', message: 'error for get market' });
                         // return;
                     }
                 })
-            });
-
+                // });
         } else {
             console.log('Error');
             res.json({ code: 200, status: 'error', message: 'error for get market' });
@@ -63,7 +84,6 @@ exports.getMarket = function(req, res,next) {
         }
     })
 }
-
 
 function getPercentageChange(oldNumber, newNumber) {
     var decreaseValue = oldNumber - newNumber;
@@ -77,7 +97,6 @@ pool.connect(function(db) {
         cron.schedule('0 */1 * * * *', function() {
             addMarketData();
         });
-
     } else {
         console.log('Error');
     }
